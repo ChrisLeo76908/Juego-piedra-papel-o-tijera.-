@@ -61,13 +61,26 @@ def jugar(eleccion):
     ganador = determinar_ganador(j1, j2)
     rondas_jugadas += 1
 
+    # Actualizar puntajes
     if ganador == "Jugador 1":
         puntaje_j1 += 1
     elif ganador == "Jugador 2":
         puntaje_j2 += 1
 
+    # Mostrar resultados parciales
+    resultado_label.config(
+        text=f"Jugador 1 eligió: {j1} | {'CPU' if modo_juego == 'CPU' else 'Jugador 2'} eligió: {j2}\nResultado de la ronda: {ganador}",
+        fg="blue",
+        font=("Arial", 12, "italic")
+    )
+
     if tipo_partida == "Una Jugada" or rondas_jugadas == 3:
-        mostrar_resultado_final(ganador if tipo_partida == "Una Jugada" else ("Jugador 1" if puntaje_j1 > puntaje_j2 else "Jugador 2" if puntaje_j2 > puntaje_j1 else "Empate"))
+        final = ganador if tipo_partida == "Una Jugada" else (
+            "Jugador 1" if puntaje_j1 > puntaje_j2 else
+            "Jugador 2" if puntaje_j2 > puntaje_j1 else
+            "Empate"
+        )
+        mostrar_resultado_final(final)
     else:
         info_label.config(text=f"Ronda {rondas_jugadas + 1} - ¡Sigue jugando!")
 
@@ -78,25 +91,41 @@ def mostrar_resultado_final(ganador):
         emoji = "😐"
         mensaje = "¡Es un empate!"
     elif ganador == "Jugador 1":
-        emoji = "😎"
+        emoji = "🏆"
         mensaje = "¡Jugador 1 gana!"
     else:
-        emoji = "😢"
-        mensaje = f"¡{ganador} pierde!"
+        emoji = "🥈"
+        mensaje = f"¡{ganador} gana!"
 
     actualizar_estadisticas(ganador if ganador != "Empate" else "Empates")
     data = cargar_estadisticas()
 
     limpiar_pantalla()
 
+    # Resultado final
     tk.Label(ventana, text=f"{mensaje} {emoji}", font=("Arial", 22, "bold"), bg="#f0f0f0").pack(pady=20)
-    tk.Label(ventana, text=f"Puntaje final: J1 = {puntaje_j1} | {('CPU' if modo_juego == 'CPU' else 'J2')} = {puntaje_j2}", font=("Arial", 14), bg="#f0f0f0").pack()
+    tk.Label(ventana, text=f"Puntaje final:\nJugador 1 = {puntaje_j1}  |  {'CPU' if modo_juego == 'CPU' else 'Jugador 2'} = {puntaje_j2}",
+             font=("Arial", 14), bg="#f0f0f0", fg="black").pack(pady=10)
 
-    tk.Label(ventana, text="\n📊 Estadísticas generales", font=("Arial", 16, "bold"), bg="#f0f0f0").pack(pady=10)
-    tk.Label(ventana, text=f"Jugador 1: {data['Jugador 1']} victorias\nJugador 2: {data['Jugador 2']} victorias\nCPU: {data['CPU']} victorias\nEmpates: {data['Empates']}", bg="#f0f0f0", font=("Arial", 12)).pack()
+    # Línea divisoria
+    tk.Label(ventana, text="―" * 60, bg="#f0f0f0").pack()
 
-    tk.Button(ventana, text="🔁 Jugar otra vez", command=menu_modo, width=20, height=2, bg="#d4edda").pack(pady=15)
-    tk.Button(ventana, text="🚪 Salir", command=ventana.destroy, width=20, height=2, bg="#f8d7da").pack()
+    # Estadísticas
+    tk.Label(ventana, text="📊 Estadísticas generales", font=("Arial", 16, "bold"), bg="#f0f0f0").pack(pady=10)
+    tk.Label(
+        ventana,
+        text=(
+            f"🏅 Jugador 1: {data['Jugador 1']} victorias\n"
+            f"👤 Jugador 2: {data['Jugador 2']} victorias\n"
+            f"🤖 CPU: {data['CPU']} victorias\n"
+            f"🤝 Empates: {data['Empates']}"
+        ),
+        font=("Arial", 12), bg="#f0f0f0"
+    ).pack(pady=5)
+
+    # Botones finales
+    tk.Button(ventana, text="🔁 Jugar otra vez", command=menu_modo, width=20, height=2, bg="#d4edda").pack(pady=10)
+    tk.Button(ventana, text="🚪 Salir", command=ventana.destroy, width=20, height=2, bg="#f8d7da").pack(pady=5)
 
 # ------------------ INTERFAZ GRÁFICA ------------------ #
 ventana = tk.Tk()
@@ -145,18 +174,21 @@ def menu_modo():
 
 def pantalla_juego():
     limpiar_pantalla()
-    global info_label
+    global info_label, resultado_label
 
     tk.Label(ventana, text="✊📄✂️ Elige tu jugada", font=("Arial", 22, "bold"), bg="#f0f0f0").pack(pady=20)
     info_label = tk.Label(ventana, text="Turno del Jugador 1", font=("Arial", 14), bg="#f0f0f0")
     info_label.pack(pady=10)
 
     frame_botones = tk.Frame(ventana, bg="#f0f0f0")
-    frame_botones.pack(pady=30)
+    frame_botones.pack(pady=20)
 
     tk.Button(frame_botones, text="🪨 Piedra", width=12, height=2, bg="#cce5ff", command=lambda: jugar("Piedra")).grid(row=0, column=0, padx=10)
     tk.Button(frame_botones, text="📄 Papel", width=12, height=2, bg="#d4edda", command=lambda: jugar("Papel")).grid(row=0, column=1, padx=10)
     tk.Button(frame_botones, text="✂️ Tijera", width=12, height=2, bg="#f8d7da", command=lambda: jugar("Tijera")).grid(row=0, column=2, padx=10)
+
+    resultado_label = tk.Label(ventana, text="", bg="#f0f0f0", font=("Arial", 12))
+    resultado_label.pack(pady=10)
 
 # Iniciar la app
 pantalla_inicio()
