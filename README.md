@@ -9,7 +9,7 @@ Este proyecto consiste en una versión digital del clásico juego Piedra, Papel 
     - Dos tipos de partida: una ronda o mejor de tres
     - Registro y actualización de estadísticas en tiempo real
     - Retroalimentación inmediata de los resultados por ronda y al finalizar la partida
-Q   - Archivos complementarios: Informe general sobre el proyecto en PDF, Diagrama de flujo en PDF y video explicativo
+    - Archivos complementarios: Informe general sobre el proyecto en PDF, Diagrama de flujo en PDF y video explicativo
 
 
 INSTRUCCIONES DEL JUEGO
@@ -109,4 +109,5 @@ COMO EJECUTAR EL JUEGO
 
 ''bash
 python juego_piedra_papel_tijera.py
+
 
